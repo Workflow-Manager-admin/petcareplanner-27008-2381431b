@@ -62,17 +62,21 @@ function App() {
   // Same for notable health events, e.g., vet/vaccination soon. (V1: health logs are not future scheduled)
   // Extensible for future.
 
-  // Always compute from fresh pets[] state (but exclude those dismissed)
+  // Always compute notifications from fresh pets/healthLogs state (exclude dismissed)
   const inAppNotifications = useMemo(() => {
     // Notifications from upcoming tasks
     let notifArr = getUpcomingTaskNotifications(pets);
-    // Could: add for health, & in future versions, check future dates.
+
+    // Notifications from upcoming health events
+    notifArr = notifArr.concat(getUpcomingHealthEventNotifications(pets, healthLogs));
+
     // Remove dismissed
     notifArr = notifArr.filter(n => !dismissedNotifIds.includes(n.id));
+    // Sort by kind and time for nicer grouping (optionally can do here)
     return notifArr;
-  }, [pets, dismissedNotifIds]);
+  }, [pets, healthLogs, dismissedNotifIds]);
 
-  // Effect: Populate notifications on pets state update
+  // Effect: Populate notifications on pets or healthLogs state update
   React.useEffect(() => {
     setNotifications(inAppNotifications);
   }, [inAppNotifications]);
