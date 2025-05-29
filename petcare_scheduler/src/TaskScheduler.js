@@ -46,7 +46,7 @@ function TaskScheduler({ pets, setPets }) {
   function handleSaveTask(task) {
     setPets((prevPets) =>
       prevPets.map((pet) => {
-        if (pet.id !== selectedPetId) return pet;
+        if (String(pet.id) !== String(selectedPetId)) return pet;
         let updatedTasks = Array.isArray(pet.tasks) ? [...pet.tasks] : [];
         if (editingTask) {
           // Edit
@@ -68,7 +68,7 @@ function TaskScheduler({ pets, setPets }) {
   function handleDeleteTask(taskId) {
     setPets((prevPets) =>
       prevPets.map((pet) => {
-        if (pet.id !== selectedPetId) return pet;
+        if (String(pet.id) !== String(selectedPetId)) return pet;
         const updatedTasks = (pet.tasks || []).filter((t) => t.id !== taskId);
         return { ...pet, tasks: updatedTasks };
       })
