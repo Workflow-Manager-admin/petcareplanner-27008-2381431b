@@ -26,3 +26,18 @@ ERROR in ./src/App.js 9:0-36
 Module not found: Error: Can't resolve './Dashboard' in '/home/kavia/workspace/code-generation/petcareplanner-27008-2381431b/petcare_scheduler/src'
 
 webpack compiled with 1 error
+Compiling...
+Compiled with warnings.
+
+[eslint] 
+src/Dashboard.js
+  Line 57:6:  React Hook useMemo has a missing dependency: 'todayDate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint] 
+src/Dashboard.js
+  Line 57:6:  React Hook useMemo has a missing dependency: 'todayDate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning
