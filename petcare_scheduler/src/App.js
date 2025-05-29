@@ -213,6 +213,79 @@ function App() {
     { key: 'notifications', label: 'Notifications' }
   ];
 
+  // DEMO/DEV: Insert sample test data if state is empty for better interactive testing of notification logic
+  React.useEffect(() => {
+    if (pets.length === 0) {
+      // (simulate today/future notifications)
+      const today = new Date().toISOString().slice(0, 10);
+      setPets([
+        {
+          id: "dog-1",
+          name: "Buddy",
+          species: "Dog",
+          breed: "Labrador",
+          age: "4",
+          tasks: [
+            {
+              id: "t1",
+              type: "Feeding",
+              details: "Chicken and rice",
+              frequency: "Daily",
+              time: "09:00",
+              statusByDate: {}
+            },
+            {
+              id: "t2",
+              type: "Walk",
+              details: "30 minutes in park",
+              frequency: "Daily",
+              time: "18:00",
+              statusByDate: {}
+            }
+          ]
+        },
+        {
+          id: "cat-2",
+          name: "Mittens",
+          species: "Cat",
+          breed: "Siamese",
+          age: "2",
+          tasks: [
+            {
+              id: "t3",
+              type: "Medication",
+              details: "Thyroid pill",
+              frequency: "Daily",
+              time: "07:30",
+              statusByDate: {}
+            }
+          ]
+        }
+      ]);
+      setHealthLogs({
+        "dog-1": [
+          {
+            id: "h1",
+            date: today,
+            time: "14:00",
+            type: "Vet Visit",
+            notes: "Regular checkup"
+          }
+        ],
+        "cat-2": [
+          {
+            id: "h2",
+            date: today,
+            time: "",
+            type: "Vaccination",
+            notes: "Rabies booster"
+          }
+        ]
+      });
+    }
+    // eslint-disable-next-line
+  }, []);
+
   // Main render for view
   let mainContent;
   switch (view) {

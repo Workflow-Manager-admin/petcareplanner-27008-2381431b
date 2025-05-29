@@ -50,3 +50,20 @@ src/App.js
 Search for the keywords to learn more about each error.
 
 webpack compiled with 1 error
+Compiling...
+Failed to compile.
+
+[eslint] 
+src/App.js
+  Line 71:32:   'getUpcomingHealthEventNotifications' is not defined  no-undef
+  Line 122:10:  'getUpcomingHealthEventNotifications' is not defined  no-undef
+
+Search for the keywords to learn more about each error.
+ERROR in [eslint] 
+src/App.js
+  Line 71:32:   'getUpcomingHealthEventNotifications' is not defined  no-undef
+  Line 122:10:  'getUpcomingHealthEventNotifications' is not defined  no-undef
+
+Search for the keywords to learn more about each error.
+
+webpack compiled with 1 error
