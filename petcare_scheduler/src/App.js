@@ -3,6 +3,7 @@ import './App.css';
 import PetProfiles from './PetProfiles';
 import TaskScheduler from './TaskScheduler';
 import Dashboard from './Dashboard';
+import HealthLog from './HealthLog';
 
 /**
  * PUBLIC_INTERFACE
@@ -15,6 +16,8 @@ function App() {
 
   // App-level pet state
   const [pets, setPets] = useState([]);
+  // App-level health logs state: { [petId]: [ {id, date, time, type, notes}] }
+  const [healthLogs, setHealthLogs] = useState({});
 
   // PUBLIC_INTERFACE
   // Dashboard is now a real feature, taking `pets` (including any tasks) as data
@@ -29,13 +32,14 @@ function App() {
       <TaskScheduler pets={pets} setPets={setPets} />
     );
   }
-  function HealthLog() {
+  // Route-integrated HealthLog
+  function HealthLogRoute() {
     return (
-      <section>
-        <h2 className="title" style={{ fontSize: '2rem'}}>Health & Medical Log</h2>
-        <div className="description">Log vet visits, vaccinations, medications, and events.</div>
-        <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Health Log feature coming soon]</div>
-      </section>
+      <HealthLog
+        pets={pets}
+        healthLogs={healthLogs}
+        setHealthLogs={setHealthLogs}
+      />
     );
   }
   function NotificationCenter() {
