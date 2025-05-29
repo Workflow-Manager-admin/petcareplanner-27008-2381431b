@@ -161,7 +161,7 @@ function TaskScheduler({ pets, setPets }) {
 
   // Main view
   const tasks = selectedPetId ? getTasksForPet(selectedPetId) : [];
-  const selectedPet = pets.find((p) => p.id === selectedPetId);
+  const selectedPet = pets.find((p) => String(p.id) === String(selectedPetId));
 
   return (
     <section>
