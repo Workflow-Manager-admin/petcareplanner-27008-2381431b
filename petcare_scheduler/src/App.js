@@ -116,11 +116,90 @@ function App() {
     );
   }
   function NotificationCenter() {
+    // Show all available notifications for today/future, including previously dismissed
+    const notifList = [
+      ...getUpcomingTaskNotifications(pets),
+      ...getUpcomingHealthEventNotifications(pets, healthLogs)
+    ];
+
+    // Dismissed notifications
+    const dismissed = notifList.filter(n => dismissedNotifIds.includes(n.id));
+    const activeNotifs = notifList.filter(n => !dismissedNotifIds.includes(n.id));
+
     return (
       <section>
         <h2 className="title" style={{ fontSize: '2rem'}}>Notification Center</h2>
-        <div className="description">Reminders for upcoming care and health events.</div>
-        <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Notifications feature coming soon]</div>
+        <div className="description" style={{marginBottom:20}}>
+          Reminders for upcoming care and health events.
+        </div>
+        <div>
+          {notifList.length === 0 && (
+            <div style={{padding:"38px 0", color: "var(--text-secondary)"}}>
+              No upcoming tasks or health reminders.
+            </div>
+          )}
+          {notifList.length > 0 && (
+            <>
+              <ul style={{listStyle: "none", padding: 0}}>
+                {activeNotifs.map(notif => (
+                  <li key={notif.id} style={{
+                    background: "rgba(30,30,30,0.95)",
+                    borderRadius: 8,
+                    boxShadow: "0 2px 8px #111a1a44",
+                    border: "1.5px solid var(--accent, #2196F3)",
+                    padding: "15px 22px",
+                    margin: "15px 0",
+                    display: "flex",
+                    gap: 13,
+                    alignItems: "center",
+                    color: "#fff"
+                  }}>
+                    <span style={{fontSize: 22, marginRight:10}}>{notif.icon}</span>
+                    <div>
+                      <div style={{fontWeight: 600}}>{notif.text}</div>
+                      {notif.time && (
+                        <div style={{fontSize: "0.98em", color: "var(--text-secondary)", marginTop: 2}}>
+                          {notif.time}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      className="btn"
+                      style={{
+                        marginLeft: "auto",
+                        background:"var(--kavia-orange)",
+                        fontWeight: 500,
+                        padding: "5px 14px",
+                        fontSize: "0.97em"
+                      }}
+                      onClick={()=>handleDismissNotification(notif.id)}
+                      aria-label="Dismiss reminder"
+                    >
+                      Dismiss
+                    </button>
+                  </li>
+                ))}
+                {dismissed.length > 0 && (
+                  <li style={{margin:"18px 0 0 0", color:"var(--text-secondary)", fontSize:"0.97em"}}>
+                    <strong>Recently dismissed:</strong>
+                    <ul style={{listStyle:"none", padding:0}}>
+                      {dismissed.map(n=>(
+                        <li key={n.id} style={{
+                          opacity:0.7,
+                          padding:"7px 0 0 17px",
+                          fontStyle:"italic",
+                          fontSize:"0.97em"
+                        }}>
+                          {n.icon} {n.text} {n.time && <span style={{marginLeft:7}}>{n.time}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                )}
+              </ul>
+            </>
+          )}
+        </div>
       </section>
     );
   }
