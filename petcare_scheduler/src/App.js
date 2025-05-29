@@ -143,6 +143,13 @@ function App() {
 
   return (
     <div className="app">
+      {/* Dismissible notifications bar, visible everywhere, not in modal */}
+      <Notifications
+        notifications={notifications}
+        onDismiss={handleDismissNotification}
+        onShowCenter={handleShowNotificationCenter}
+      />
+
       {/* Top navbar, persistent */}
       <nav className="navbar">
         <div className="container" style={{width: "100%"}}>
@@ -156,14 +163,43 @@ function App() {
             </div>
             {/* Notification indicator area (right side of top bar) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-              {/* In the future: status badges, number of pending reminders, etc. */}
+              {/* Notification badge with count */}
               {view !== 'notifications' && (
                 <button
                   className="btn"
-                  aria-label="Show Notifications"
-                  onClick={() => setView('notifications')}
-                  style={{ background: 'var(--kavia-orange)' }}
-                >🔔</button>
+                  aria-label={`Show Notifications (${notifications.length})`}
+                  onClick={handleShowNotificationCenter}
+                  style={{
+                    background: notifications.length > 0
+                      ? 'var(--accent, #2196F3)'
+                      : 'var(--kavia-orange)',
+                    boxShadow: notifications.length > 0 ? "0 2px 8px #2196F388" : undefined,
+                    color: "#fff",
+                    position: "relative",
+                    fontWeight: 600
+                  }}
+                >
+                  🔔
+                  {notifications.length > 0 && (
+                    <span
+                      style={{
+                        background: "var(--kavia-orange)",
+                        color: "#fff",
+                        borderRadius: "50%",
+                        fontSize: "0.81em",
+                        padding: "2.5px 7px",
+                        fontWeight: 800,
+                        position: "absolute",
+                        top: "-7px",
+                        right: "-13px",
+                        border: "2px solid var(--kavia-dark)"
+                      }}
+                      aria-label={`${notifications.length} unread notifications`}
+                    >
+                      {notifications.length}
+                    </span>
+                  )}
+                </button>
               )}
             </div>
           </div>
