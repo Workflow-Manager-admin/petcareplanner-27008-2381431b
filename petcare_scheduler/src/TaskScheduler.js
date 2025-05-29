@@ -10,11 +10,38 @@ import React, { useState } from 'react';
  * - pets: array of pet objects
  * - setPets: update pets state (used for storing tasks per pet)
  */
+import React, { useState, useEffect } from 'react';
+
+/**
+ * PUBLIC_INTERFACE
+ * TaskScheduler component for recurring care task management,
+ * supports add/edit/delete/scheduling tasks for each pet.
+ * Integrated with App-level pets/tasks state.
+ *
+ * Props:
+ * - pets: array of pet objects
+ * - setPets: update pets state (used for storing tasks per pet)
+ */
 function TaskScheduler({ pets, setPets }) {
   // Modal/task editor state
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null); // If not null, editing existing task
-  const [selectedPetId, setSelectedPetId] = useState(pets.length > 0 ? pets[0].id : null);
+  // Always keep selectedPetId pointing to a valid pet after pets list changes
+  const [selectedPetId, setSelectedPetId] = useState(pets.length > 0 ? String(pets[0].id) : '');
+
+  // When `pets` changes, update selectedPetId as appropriate
+  useEffect(() => {
+    if (pets.length === 0) {
+      setSelectedPetId('');
+    } else {
+      // If current selectedPetId is still present, keep it; else default to first pet
+      const petIds = pets.map(p => String(p.id));
+      if (!petIds.includes(String(selectedPetId))) {
+        setSelectedPetId(String(pets[0].id));
+      }
+    }
+    // eslint-disable-next-line
+  }, [pets]);
 
   // Helper: generate unique taskId
   function genTaskId() {
@@ -23,7 +50,7 @@ function TaskScheduler({ pets, setPets }) {
 
   // Resolve tasks for selected pet (empty array if not found)
   function getTasksForPet(petId) {
-    const pet = pets.find((p) => p.id === petId);
+    const pet = pets.find((p) => String(p.id) === String(petId));
     return (pet && Array.isArray(pet.tasks)) ? pet.tasks : [];
   }
 
@@ -124,7 +151,7 @@ function TaskScheduler({ pets, setPets }) {
         onChange={e=>setSelectedPetId(e.target.value)}
       >
         {pets.map((pet) => (
-          <option key={pet.id} value={pet.id}>
+          <option key={pet.id} value={String(pet.id)}>
             {pet.name}
           </option>
         ))}
