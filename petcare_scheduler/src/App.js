@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import PetProfiles from './PetProfiles';
+import TaskScheduler from './TaskScheduler';
 
 /**
  * PUBLIC_INTERFACE
@@ -25,13 +26,10 @@ function App() {
       </section>
     );
   }
-  function TaskScheduler() {
+  // Route-integrated TaskScheduler
+  function TaskSchedulerRoute() {
     return (
-      <section>
-        <h2 className="title" style={{ fontSize: '2rem'}}>Task Scheduler</h2>
-        <div className="description">Schedule feedings, walks, meds, and more.</div>
-        <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Scheduler feature coming soon]</div>
-      </section>
+      <TaskScheduler pets={pets} setPets={setPets} />
     );
   }
   function HealthLog() {
