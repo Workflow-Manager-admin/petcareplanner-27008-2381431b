@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import PetProfiles from './PetProfiles';
 import TaskScheduler from './TaskScheduler';
+import Dashboard from './Dashboard';
 
 /**
  * PUBLIC_INTERFACE
@@ -15,15 +16,11 @@ function App() {
   // App-level pet state
   const [pets, setPets] = useState([]);
 
-  // Placeholder feature components except Pets (now replaced)
+  // PUBLIC_INTERFACE
+  // Dashboard is now a real feature, taking `pets` (including any tasks) as data
   function PetDashboard() {
-    // Will eventually render task list organized by pet
     return (
-      <section>
-        <h2 className="title" style={{ fontSize: '2rem'}}>Daily Dashboard</h2>
-        <div className="description">All today's care tasks for your pets appear here.</div>
-        <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Dashboard feature coming soon]</div>
-      </section>
+      <Dashboard pets={pets} setPets={setPets} />
     );
   }
   // Route-integrated TaskScheduler
