@@ -26,6 +26,69 @@ function App() {
   const [dismissedNotifIds, setDismissedNotifIds] = useState([]);
 
   // PUBLIC_INTERFACE
+  // Auto-generate notifications from tasks/events that are upcoming today/future
+  // For V1 they are session-only, calculated on render.
+
+  function getUpcomingTaskNotifications(allPets) {
+    const notifList = [];
+    const now = new Date();
+    const nowStr = now.toISOString().slice(0, 10); // today YYYY-MM-DD
+    // Show only reminders for today and very soon upcoming tasks (simulate future expansion)
+    allPets.forEach(pet => {
+      (pet.tasks || []).forEach(task => {
+        // Only show if task is today and not completed
+        const frequency = (task.frequency || "Daily");
+        let shouldRemind = false;
+        if (frequency === "Daily") shouldRemind = true;
+        else if (frequency === "Weekly") shouldRemind = (now.getDay() === 1); // only Monday
+        else if (frequency === "Every Other Day") shouldRemind = true;
+        else shouldRemind = true; // fallback
+        // Check if already completed/skipped today
+        const status = (task.statusByDate && task.statusByDate[nowStr]) || "pending";
+        if (shouldRemind && status !== "completed") {
+          // Reminder 1h before or just list all for tasks soon/today
+          notifList.push({
+            id: `task-${pet.id}-${task.id}`,
+            text: `Upcoming: ${task.type} for ${pet.name}`,
+            icon: "⏰",
+            time: task.time ? `@ ${task.time}` : "",
+            kind: "task"
+          });
+        }
+      });
+    });
+    return notifList;
+  }
+  // Same for notable health events, e.g., vet/vaccination soon. (V1: health logs are not future scheduled)
+  // Extensible for future.
+
+  // Always compute from fresh pets[] state (but exclude those dismissed)
+  const inAppNotifications = useMemo(() => {
+    // Notifications from upcoming tasks
+    let notifArr = getUpcomingTaskNotifications(pets);
+    // Could: add for health, & in future versions, check future dates.
+    // Remove dismissed
+    notifArr = notifArr.filter(n => !dismissedNotifIds.includes(n.id));
+    return notifArr;
+  }, [pets, dismissedNotifIds]);
+
+  // Effect: Populate notifications on pets state update
+  React.useEffect(() => {
+    setNotifications(inAppNotifications);
+  }, [inAppNotifications]);
+
+  // Dismiss handler
+  function handleDismissNotification(notifId) {
+    setDismissedNotifIds(ids => [...ids, notifId]);
+  }
+
+  // Reset notifications when center viewed (simulate restore, e.g., "View All")
+  function handleShowNotificationCenter() {
+    setView('notifications');
+    setDismissedNotifIds([]);
+  }
+
+  // PUBLIC_INTERFACE
   // Dashboard is now a real feature, taking `pets` (including any tasks) as data
   function PetDashboard() {
     return (
