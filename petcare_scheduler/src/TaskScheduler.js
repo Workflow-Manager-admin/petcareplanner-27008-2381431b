@@ -10,18 +10,6 @@ import React, { useState, useEffect } from 'react';
  * - pets: array of pet objects
  * - setPets: update pets state (used for storing tasks per pet)
  */
-import React, { useState, useEffect } from 'react';
-
-/**
- * PUBLIC_INTERFACE
- * TaskScheduler component for recurring care task management,
- * supports add/edit/delete/scheduling tasks for each pet.
- * Integrated with App-level pets/tasks state.
- *
- * Props:
- * - pets: array of pet objects
- * - setPets: update pets state (used for storing tasks per pet)
- */
 function TaskScheduler({ pets, setPets }) {
   // Modal/task editor state
   const [showModal, setShowModal] = useState(false);

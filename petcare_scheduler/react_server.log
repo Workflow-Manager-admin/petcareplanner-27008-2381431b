@@ -399,3 +399,18 @@ src/TaskScheduler.js
   Line 13:7:  Parsing error: Identifier 'React' has already been declared. (13:7)
 
 webpack compiled with 2 errors and 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint] 
+src/Dashboard.js
+  Line 57:6:  React Hook useMemo has a missing dependency: 'todayDate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint] 
+src/Dashboard.js
+  Line 57:6:  React Hook useMemo has a missing dependency: 'todayDate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning
