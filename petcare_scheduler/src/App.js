@@ -96,23 +96,20 @@ function App() {
   }
 
   // Always compute notifications from fresh pets/healthLogs state (exclude dismissed)
-  const inAppNotifications = useMemo(() => {
-    // Notifications from upcoming tasks
-    let notifArr = getUpcomingTaskNotifications(pets);
+  // Remove useMemo to ensure inAppNotifications is recalculated on every render if pets/healthLogs/dismissedNotifIds change
+  const inAppNotifications =
+    (() => {
+      let notifArr = getUpcomingTaskNotifications(pets);
+      notifArr = notifArr.concat(getUpcomingHealthEventNotifications(pets, healthLogs));
+      notifArr = notifArr.filter(n => !dismissedNotifIds.includes(n.id));
+      return notifArr;
+    })();
 
-    // Notifications from upcoming health events
-    notifArr = notifArr.concat(getUpcomingHealthEventNotifications(pets, healthLogs));
-
-    // Remove dismissed
-    notifArr = notifArr.filter(n => !dismissedNotifIds.includes(n.id));
-    // Sort by kind and time for nicer grouping (optionally can do here)
-    return notifArr;
-  }, [pets, healthLogs, dismissedNotifIds]);
-
-  // Effect: Populate notifications on pets or healthLogs state update
+  // Ensure notifications state is always kept up to date, especially after adding pets or tasks.
   React.useEffect(() => {
     setNotifications(inAppNotifications);
-  }, [inAppNotifications]);
+    // Explicitly depend on pets and healthLogs, not just inAppNotifications (which is now non-memoized)
+  }, [pets, healthLogs, dismissedNotifIds]);
 
   // Dismiss handler
   function handleDismissNotification(notifId) {
