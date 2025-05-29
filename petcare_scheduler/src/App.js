@@ -67,7 +67,7 @@ function App() {
     case 'dashboard': mainContent = <PetDashboard/>; break;
     case 'pets': mainContent = <PetProfiles pets={pets} setPets={setPets}/>; break;
     case 'scheduler': mainContent = <TaskSchedulerRoute/>; break;
-    case 'health': mainContent = <HealthLog/>; break;
+    case 'health': mainContent = <HealthLogRoute/>; break;
     case 'notifications': mainContent = <NotificationCenter/>; break;
     default: mainContent = <PetDashboard/>;
   }
