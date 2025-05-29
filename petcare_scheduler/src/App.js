@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 import PetProfiles from './PetProfiles';
 import TaskScheduler from './TaskScheduler';
 import Dashboard from './Dashboard';
 import HealthLog from './HealthLog';
+import Notifications from './Notifications';
 
 /**
  * PUBLIC_INTERFACE
@@ -18,6 +19,11 @@ function App() {
   const [pets, setPets] = useState([]);
   // App-level health logs state: { [petId]: [ {id, date, time, type, notes}] }
   const [healthLogs, setHealthLogs] = useState({});
+
+  // Notifications/reminders state (array of {id, text, icon, time, ...})
+  const [notifications, setNotifications] = useState([]);
+  // Track per-session dismissed ids so reminders do not reappear until new ones are generated
+  const [dismissedNotifIds, setDismissedNotifIds] = useState([]);
 
   // PUBLIC_INTERFACE
   // Dashboard is now a real feature, taking `pets` (including any tasks) as data
