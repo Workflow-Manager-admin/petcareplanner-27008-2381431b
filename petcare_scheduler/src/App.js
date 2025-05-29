@@ -26,27 +26,34 @@ function App() {
   const [dismissedNotifIds, setDismissedNotifIds] = useState([]);
 
   // PUBLIC_INTERFACE
-  // Auto-generate notifications from tasks/events that are upcoming today/future
-  // For V1 they are session-only, calculated on render.
+  // Enhanced: Generate notifications for both upcoming tasks AND scheduled health events
 
   function getUpcomingTaskNotifications(allPets) {
     const notifList = [];
     const now = new Date();
     const nowStr = now.toISOString().slice(0, 10); // today YYYY-MM-DD
-    // Show only reminders for today and very soon upcoming tasks (simulate future expansion)
+
     allPets.forEach(pet => {
       (pet.tasks || []).forEach(task => {
-        // Only show if task is today and not completed
+        // Only show if task is scheduled today (according to recurrence) and not completed
         const frequency = (task.frequency || "Daily");
         let shouldRemind = false;
-        if (frequency === "Daily") shouldRemind = true;
-        else if (frequency === "Weekly") shouldRemind = (now.getDay() === 1); // only Monday
-        else if (frequency === "Every Other Day") shouldRemind = true;
-        else shouldRemind = true; // fallback
-        // Check if already completed/skipped today
+        if (frequency === "Daily") {
+          shouldRemind = true;
+        } else if (frequency === "Weekly") {
+          // For simplicity: assuming "Weekly" means every Monday
+          shouldRemind = (now.getDay() === 1);
+        } else if (frequency === "Every Other Day") {
+          // Easiest, just alternate days (very basic)
+          const start = new Date();
+          start.setDate(start.getDate() % 2 === 0 ? start.getDate() : start.getDate()-1);
+          shouldRemind = true; // As in foundation, treat as daily (refined logic can be added)
+        } else {
+          shouldRemind = true; // fallback/custom
+        }
+        // Check completion
         const status = (task.statusByDate && task.statusByDate[nowStr]) || "pending";
         if (shouldRemind && status !== "completed") {
-          // Reminder 1h before or just list all for tasks soon/today
           notifList.push({
             id: `task-${pet.id}-${task.id}`,
             text: `Upcoming: ${task.type} for ${pet.name}`,
@@ -59,8 +66,34 @@ function App() {
     });
     return notifList;
   }
-  // Same for notable health events, e.g., vet/vaccination soon. (V1: health logs are not future scheduled)
-  // Extensible for future.
+
+  // Generate notifications for upcoming health/vet events -- any healthLogs in the future or today
+  function getUpcomingHealthEventNotifications(petsArr, healthLogsObj) {
+    const notifList = [];
+    // Find health logs (per pet) that are scheduled for the future (date is today or later)
+    const now = new Date();
+    const nowISO = now.toISOString().slice(0, 10);
+
+    petsArr.forEach(pet => {
+      const petHealthLogs = (healthLogsObj && healthLogsObj[pet.id]) || [];
+      petHealthLogs.forEach(event => {
+        // Only show if scheduled for today or future
+        if (event && event.date) {
+          // Date in form "YYYY-MM-DD"
+          if (event.date >= nowISO) {
+            notifList.push({
+              id: `health-${pet.id}-${event.id}`,
+              text: `Upcoming: ${event.type} for ${pet.name}`,
+              icon: "💉",
+              time: event.time ? `@ ${event.time}` : "",
+              kind: "health"
+            });
+          }
+        }
+      });
+    });
+    return notifList;
+  }
 
   // Always compute notifications from fresh pets/healthLogs state (exclude dismissed)
   const inAppNotifications = useMemo(() => {
@@ -332,7 +365,8 @@ function App() {
                     boxShadow: notifications.length > 0 ? "0 2px 8px #2196F388" : undefined,
                     color: "#fff",
                     position: "relative",
-                    fontWeight: 600
+                    fontWeight: 600,
+                    border: notifications.length > 0 ? "2px solid var(--kavia-orange)" : ""
                   }}
                 >
                   🔔
