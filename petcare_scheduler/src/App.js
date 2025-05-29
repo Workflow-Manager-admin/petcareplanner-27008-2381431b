@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import PetProfiles from './PetProfiles';
 
 /**
  * PUBLIC_INTERFACE
@@ -10,7 +11,10 @@ function App() {
   // Navigation state: main views
   const [view, setView] = useState('dashboard');
 
-  // Placeholder feature components
+  // App-level pet state
+  const [pets, setPets] = useState([]);
+
+  // Placeholder feature components except Pets (now replaced)
   function PetDashboard() {
     // Will eventually render task list organized by pet
     return (
@@ -18,15 +22,6 @@ function App() {
         <h2 className="title" style={{ fontSize: '2rem'}}>Daily Dashboard</h2>
         <div className="description">All today's care tasks for your pets appear here.</div>
         <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Dashboard feature coming soon]</div>
-      </section>
-    );
-  }
-  function PetsList() {
-    return (
-      <section>
-        <h2 className="title" style={{ fontSize: '2rem'}}>My Pets</h2>
-        <div className="description">Manage or view details for your pets.</div>
-        <div style={{marginTop: 32, color: 'var(--text-secondary)'}}>[Pet Profiles feature coming soon]</div>
       </section>
     );
   }
@@ -71,7 +66,7 @@ function App() {
   let mainContent;
   switch (view) {
     case 'dashboard': mainContent = <PetDashboard/>; break;
-    case 'pets': mainContent = <PetsList/>; break;
+    case 'pets': mainContent = <PetProfiles pets={pets} setPets={setPets}/>; break;
     case 'scheduler': mainContent = <TaskScheduler/>; break;
     case 'health': mainContent = <HealthLog/>; break;
     case 'notifications': mainContent = <NotificationCenter/>; break;
