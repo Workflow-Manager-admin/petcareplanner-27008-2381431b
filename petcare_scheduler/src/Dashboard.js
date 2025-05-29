@@ -24,7 +24,8 @@ function Dashboard({ pets, setPets }) {
   }
 
   // Build array of {pet, task} for today's schedule, sorted by pet name and task time
-  const todayTasks = useMemo(() => {
+  // Remove useMemo for todayTasks and recalculate on every render for absolute freshness (performance tradeoff is fine for this scale)
+  const todayTasks = (() => {
     let all = [];
     for (const pet of pets) {
       if (!pet.tasks || !Array.isArray(pet.tasks)) continue;
@@ -54,7 +55,7 @@ function Dashboard({ pets, setPets }) {
       return a.task.time.localeCompare(b.task.time);
     });
     return all;
-  }, [pets, todayStr]);
+  })();
 
   // Handler: mark a task as completed (today)
   function handleToggleTask(petId, taskId) {
@@ -98,7 +99,7 @@ function Dashboard({ pets, setPets }) {
   }
 
   // Group by pet for display
-  const groupedByPet = useMemo(() => {
+  const groupedByPet = (() => {
     const group = {};
     for (const entry of todayTasks) {
       const pname = entry.pet.name || "Unnamed";
@@ -106,7 +107,7 @@ function Dashboard({ pets, setPets }) {
       group[pname].push(entry.task);
     }
     return group;
-  }, [todayTasks]);
+  })();
 
   return (
     <section>
