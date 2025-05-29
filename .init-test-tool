@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/petcareplanner-27008-2381431b/petcareplanner_frontend"
+}
